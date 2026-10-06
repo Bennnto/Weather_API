@@ -1,6 +1,6 @@
 ## Weather API 
 
-Weather API solution for [Weather API](https://roadmap.sh/projects/weather-api-wrapper-service) challenge from (roadmap.sh)[https://roadmap.sh/dashboard]
+Weather API solution for [Weather API](https://roadmap.sh/projects/weather-api-wrapper-service) challenge from [roadmap.sh](https://roadmap.sh/dashboard)
 
 - This project is a FastAPI based Weather API project that fetch weather information from [Openweathermap.org](https://openweathermap.org) based on a location
   name or coordinate (lattitude and longitude) this api included cache and rate limit
