@@ -1,5 +1,3 @@
-from tempfile import tempdir
-
 from pydantic import BaseModel
 
 
@@ -21,7 +19,7 @@ class Location_Response(BaseModel):
 class Weather_Base(BaseModel):
     location_id : int
     temp : float | None = None
-    feel_likes : float | None = None
+    feels_like : float | None = None
     temp_min : float | None = None
     temp_max : float | None = None
     pressure : float | None = None
@@ -31,6 +29,7 @@ class Weather_Base(BaseModel):
     wind_spd : float | None = None
     wind_deg : float | None = None
     description : str | None = None
+    icon: str | None = None
 
 class Weather_Response(Weather_Base):
     pass

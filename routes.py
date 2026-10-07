@@ -1,17 +1,21 @@
-from fastapi import FastAPI, APIRouter, Response, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from database import get_db
 from schemas import Weather_Create, Weather_Response, Location_Create, Location_Response
 from models import Location, Weather
 from sqlalchemy.orm import Session
-from get_info import get_location, weather_info
+from services.get_info import get_location, weather_info
 from redis import StrictRedis
 from redis_cache import RedisCache
 from typing import List
 from ratelimit import limits
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 router = APIRouter()
-
-client = StrictRedis(host="redis", decode_response=True)
+host_redis = os.getenv("REDIS_HOST")
+client = StrictRedis(host=host_redis, decode_responses=True)
 cache = RedisCache(redis_client=client)
 
 THIRTYMINUTES = 1800
@@ -23,7 +27,7 @@ def post_weather(city: str, db: Session=Depends(get_db)):
     if not location :
         api_location = get_location(city)
         if not api_location :
-            raise HTTPException(status_code=401, detail="Cannot get location data from APIs")
+            raise HTTPException(status_code=404, detail="Cannot get location data from APIs")
         name, lat, lon = api_location
         location = Location(
             name = name,
@@ -36,7 +40,7 @@ def post_weather(city: str, db: Session=Depends(get_db)):
 
     weather_data = weather_info(location.latitude, location.longitude)
     if weather_data is None :
-        raise HTTPException(status_code=401, detail="Cannot get weather information from APIs")
+        raise HTTPException(status_code=404, detail="Cannot get weather information from APIs")
     weather = Weather(
         location_id = location.id,
         temp = weather_data.get("temp", None),
@@ -45,11 +49,12 @@ def post_weather(city: str, db: Session=Depends(get_db)):
         temp_max = weather_data.get("temp_max", None),
         pressure = weather_data.get("pressure", None),
         humidity = weather_data.get("humidity", None),
-        sea_lv = weather_data.get("sea_lv", None),
-        grnd_lv = weather_data.get("grnd_lv", None),
+        sea_lv = weather_data.get("sea_level", None),
+        grnd_lv = weather_data.get("ground_level", None),
         wind_spd = weather_data.get("wind_spd", None),
-        wind_deg = weather_data.get("wind_gust", None),
+        wind_deg = weather_data.get("wind_deg", None),
         description = weather_data.get("description", None),
+        icon = weather_data.get("icon", None)
     )
     db.add(weather)
     db.commit()
@@ -69,7 +74,12 @@ def get_weather(db : Session = Depends(get_db)):
 def get_weather_city(city: str, db: Session=(Depends(get_db))):
     location = db.query(Location).filter(Location.name == city).first()
     if location is not None :
-        weather = db.query(Weather).filter(Weather.location_id == location.id).first()
+        weather =(
+        db.query(Weather)
+        .filter(Weather.location_id == location.id)
+        .order_by(Weather.created_at.desc())
+        .first()
+        )
         return weather
     else:
         raise HTTPException(status_code=400, detail="Not found weather information in database")

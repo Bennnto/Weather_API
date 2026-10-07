@@ -30,5 +30,6 @@ class Weather(Base):
     wind_spd = Column(Float, nullable=True)
     wind_deg = Column(Float, nullable=True)
     description = Column(Text, nullable=True)
+    icon = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
     location = relationship("Location", back_populates="weather")

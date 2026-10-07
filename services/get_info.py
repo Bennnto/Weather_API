@@ -45,7 +45,8 @@ def extract_info(data):
         "ground_level" : data["main"]["grnd_level"],
         "wind_spd" : data["wind"].get("speed", None),
         "wind_deg" : data["wind"].get("deg", None),
-        "description": data["weather"][0]["description"]
+        "description": data["weather"][0]["description"],
+        "icon": data["weather"][0]["icon"]
 
     }
 

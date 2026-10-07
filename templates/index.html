@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <!-- Vector Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+    <div class="weather-card">
+        <h2>Weather Forecast</h2>
+
+        <form id="weather-form">
+            <div class="input-wrapper">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="city_input" placeholder="Search city..." required autocomplete="off" />
+            </div>
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Quick click city buttons -->
+        <div class="city-chips">
+            <button type="button" class="chip">Tokyo</button>
+            <button type="button" class="chip">London</button>
+            <button type="button" class="chip">New York</button>
+            <button type="button" class="chip">Paris</button>
+            <button type="button" class="chip">Toronto</button>
+        </div>
+
+        <!-- Loading spinner -->
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Fetching forecast...</p>
+        </div>
+
+        <!-- Error notification -->
+        <div id="error" class="error-msg hidden"></div>
+
+        <!-- Weather display -->
+        <div id="result" class="weather-info hidden">
+            <h3 id="display-city"></h3>
+
+            <div class="weather-visual">
+                <img id="weather-icon" src="" alt="Weather condition" class="hidden" width="90" height="90" />
+            </div>
+
+            <div class="temp"><span id="temp-val"></span></div>
+            <p id="description"></p>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <i class="bi bi-thermometer-half icon-temp"></i>
+                    <span class="metric-label">Feels Like</span>
+                    <strong id="feels-like-val">--</strong>
+                </div>
+                <div class="metric-card">
+                    <i class="bi bi-droplet-fill icon-humidity"></i>
+                    <span class="metric-label">Humidity</span>
+                    <strong><span id="humidity-val">--</span>%</strong>
+                </div>
+                <div class="metric-card">
+                    <i class="bi bi-wind icon-wind"></i>
+                    <span class="metric-label">Wind</span>
+                    <strong><span id="wind-val">--</span> m/s</strong>
+                </div>
+                <div class="metric-card">
+                    <i class="bi bi-speedometer2 icon-pressure"></i>
+                    <span class="metric-label">Pressure</span>
+                    <strong><span id="pressure-val">--</span> hPa</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='js/app.js') }}"></script>
+</body>
+</html>
